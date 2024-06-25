@@ -318,8 +318,102 @@ def introscreen():
        if pygame.display.get_surface() != None:
            screen.fill(background_col)
            screen.blit(temp_ground[0],temp_ground_rect)
-           if temp_dino.isBlinking
-        
+           if temp_dino.isBlinking:
+               screen.blit(logo,logo_rect)
+           temp_dino.draw()
+
+           pygame.display.update()
+
+      clock.tick(FPS)
+      if temp_dino.isJumping == False and temp_dino.isBlinking == False:
+          gameStart = True
+
+def gameplay():
+    global high_score
+    gamespeed = 4
+    startMenu = False
+    gameOver = False
+    gameQuit = False
+    playerDino = Dino(44,47)
+    new_ground = Ground(-1*gamespeed)
+    scb = Scoreboard()
+    highsc = Scoreboard(width*0.78)
+    counter = 0
+
+    cacti = pygame.sprite.Group()
+    pteras = pygame.sprite.Group()
+    clouds = pygame.sprite.Group()
+    last_obstacle = pygame.sprite.Group()
+
+    Cactus.containers = cacti
+    Ptera.containers = pteras
+    Cloud.containers = clouds
+
+    retbutton_image,retbutton_rect = load_image('replay_button.png',35,31,-1)
+    gameover_image,gameover_rect = load_image('game_over.png',190,11,-1)
+
+    temp_images,temp_rect = load_sprite_sheet('numbers.png',12,1,11,int(11*6/5),-1)
+    HI_image = pygame_Surface((22,int(11*6/5)))
+    HI_rect = HI_image.get_rect()
+    HI_image.fill(background_col)
+    HI_image.blit(temp_images[10],temp_rect)
+    temp_rect.left += temp_rect.width
+    HI_image.blit(temp_images[11],temp_rect)
+    HI_rect.top = height*0.1
+    HI_rect.left = width*0.73
+
+    while not gameQuit:
+        while startMenu:
+            pass
+        while not gameOver:
+            if pygame.display.get_surface() == None:
+                print("Couldn't load display surface")
+                gameQuit = True
+                gameOver = True
+            else:
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                       if event.key == pygame.K_SPACE:
+                           if playerDino.rect.bottom == int(0.98*height):
+                               playerDino.isJumping = True
+                               if pygame.mixer.get._init() != None:
+                                   jump_sound.play()
+                               playerDino.movement[1] = -1*playerDino.jumpSpeed
+
+                        if event.key == pygame.K_DOWN:
+                            if not (playerDino.isJumping and playerDino.isDead) :
+                                playerDino.isDucking = False
+            for c in cacti:
+                c.movement[0] = -1*gamespeed
+                if pygame.sprite.collide_mask(playerDino,c):
+                    playerDino.isDead = True
+                    if pygame.mixer.get_init() != None:
+                        die_sound.play()
+
+            for p in pteras:
+                p.movement[0] = -1*gamespeed
+                if pygame.sprite.collide_mask(playerDino,p):
+                    playerDino.isDead = True
+                    if pygame.mixer.get_init() != None:
+                        die_sound.play()
+
+            if len(cacti) < 2:
+                for l in last_obstacle:
+                    if l.rect.right < width*0.8:
+                        last_obstacle.empty()
+                        last_obstacle.add(Cactus(gamespeed, 40, 40))
+
+            if len(pteras) == 0 and random.randrange(0,200) == 10 and counter > 500:
+                for l in last_obstacle:
+                    if l.rect.right < width*0.8:
+                        last_obstacle.empty()
+                        last_obstacle.add(Ptera(gamespeed, 46, 40))
+
+            if len(clouds) < 5 and random.randrange(0,300) == 10:
+                Cloud(width,random.randrange(height/5,height/2))
+
+            player
+                            
        
      
           
