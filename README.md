@@ -412,7 +412,80 @@ def gameplay():
             if len(clouds) < 5 and random.randrange(0,300) == 10:
                 Cloud(width,random.randrange(height/5,height/2))
 
-            player
+            playerDino.update()
+            cacti.update()
+            pteras update()
+            clouds.update()
+            new_grouund.update()
+            scb.update(playerDino.score)
+            highsc.update(high_score)
+
+            if pygame.display.get_surface() != None:
+                screen.fill(background_col)
+                new_ground.draw()
+                clouds.draw(screen)
+                scb.draw()
+                if high_score != 0:
+                    highsc.draw()
+                    screen.blit(HI_image,HI_rect)
+                cacti.draw(screen)
+                pteras.draw(screen)
+                playerDino.draw()
+
+                pygame.display.update()
+            clock.tick(FPS)
+
+            if playerDino.isDead:
+                gameOver = True
+                if playerDino.score > high_score:
+                    high_score = playerDino.score
+
+            if counter % 700 == 699:
+                new_ground.speed -= 1
+                gamespeed += 1
+
+            counter = (counter + 1)
+
+        if gameQuit:
+            break
+
+        while gameOver:
+            if pygame.display.get_surface() == None:
+                print("Cloudn't load display surface")
+                gameQuit = True
+                gameOver = False
+            else:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        gameQuit = True
+                        gameOver = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            gameQuit = True
+                            gameOver = False
+
+                        if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                            gameOver = False
+                            gameplay()
+            highsc.update(high_score)
+            if pygame.display.get_surface () != None:
+                disp_gameOver_msg(retbutton_image,gameover_image)
+                if high_score != 0:
+                    highsc.draw()
+                    screen.blit(HI_image,HI_rect)
+                pygame.display.update()
+            clcok.tick(FPS)
+
+    pygame.quit()
+    quit()
+
+def main():
+    isGameQuit = introscreen()
+    if not isGameQuit:
+        gameplay()
+
+main()
+                
                             
        
      
